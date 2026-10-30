@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>TP2 PowerShell</title>
+</head>
+<body>
+  <h1>TP2 - Programación para Seguridad Informática</h1>
+  <p>Alumno: Cavero Dean Jesus | Docente: Lic. Carlos Pacheco</p>
+  <h2>Ejercicio 1: Saludo</h2>
+  <pre># Ejercicio 1: Saludo personalizado
+do {
+    $nombre = (Read-Host &quot;&#191;C&#243;mo te llamas?&quot;).Trim()
+    if ([string]::IsNullOrWhiteSpace($nombre)) {
+        Write-Host &quot;El nombre no puede estar vac&#237;o. Intent&#225; de nuevo.&quot; -ForegroundColor Yellow
+    }
+} while ([string]::IsNullOrWhiteSpace($nombre))
+
+Write-Host &quot;&#161;Hola $nombre!&quot; -ForegroundColor Green
+</pre>
+  <h2>Ejercicio 2: Cálculo de paga</h2>
+  <pre># Ejercicio 2: C&#225;lculo de paga
+
+function Leer-Numero {
+    param(
+        [string]$Mensaje,
+        [double]$Maximo
+    )
+    while ($true) {
+        # Acepta coma o punto como separador decimal
+        $entrada = (Read-Host $Mensaje).Trim().Replace(&#39;,&#39;, &#39;.&#39;)
+        $valor = 0.0
+        $ok = [double]::TryParse(
+            $entrada,
+            [System.Globalization.NumberStyles]::Float,
+            [System.Globalization.CultureInfo]::InvariantCulture,
+            [ref]$valor
+        )
+        if ($ok -and -not [double]::IsNaN($valor) -and -not [double]::IsInfinity($valor) `
+            -and $valor -ge 0 -and $valor -le $Maximo) {
+            return $valor
+        }
+        Write-Host &quot;Valor inv&#225;lido. Ingres&#225; un n&#250;mero entre 0 y $Maximo (ej: 40 o 12,5).&quot; -ForegroundColor Yellow
+    }
+}
+
+$horas = Leer-Numero -Mensaje &quot;Ingres&#225; el n&#250;mero de horas trabajadas&quot; -Maximo 744
+$coste = Leer-Numero -Mensaje &quot;Ingres&#225; el coste por hora&quot; -Maximo 1000000000
+
+$paga = $horas * $coste
+$pagaTxt = $paga.ToString(&quot;N2&quot;, [System.Globalization.CultureInfo]::GetCultureInfo(&quot;es-AR&quot;))
+
+Write-Host (&#39;La paga que le corresponde es: $ {0}&#39; -f $pagaTxt) -ForegroundColor Green
+</pre>
+</body>
+</html>
